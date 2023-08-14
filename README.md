@@ -18,15 +18,20 @@ The steps below assume you are using this on a Linux, Unix, or macOS system that
 1. Put all of these files in a single folder, preferably an RStudio Project folder.
 2. Edit the folder path in *run_daily.sh* and *crontab.txt* to match the folder path that stores these files.
 3. Edit the first line of *run_daily.sh* to correct the path to the Bash interpreter, if necessary.
-4. Edit *crontab.txt* for the schedule you want (or leave as-is for midnight every day).
-5. Run the following Bash commands at the Bash (Terminal) prompt:
+4. Edit the file paths in *run_daily.sh* for the *date* and *Rscript* utilities, if necessary.
+5. Edit *crontab.txt* for the schedule you want (or leave as-is for midnight every day).
+6. Run the following Bash commands at the Bash (Terminal) prompt:
 ```
 chmod +x run_daily.sh
 crontab -l > old_crontab.txt
 cat old_crontab.txt crontab.txt > new_crontab.txt
 crontab new_crontab.txt
 ```
-6. Confirm your crontab entry has been stored with:
+7. Confirm your *crontab* entry has been stored with:
 ```
 crontab -l
+```
+8. Either wait for *cron* to run your script or run it manually from Bash with:
+```
+bash ./run_daily.sh
 ```
