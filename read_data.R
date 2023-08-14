@@ -17,13 +17,15 @@ df <- map_df(fp, read_csv, col_types = 'Tcnnnn', show_col_types = FALSE,
 
 # Reshape data for plotting
 df_long <- df %>% 
-  select(time_stamp, sensor_index, humidity_a, temperature_a, pm2.5_atm_a) %>% 
+  select(time_stamp, sensor_index, pm2.5_atm_a, temperature_a, humidity_a) %>% 
   pivot_longer(c(-time_stamp, -sensor_index), 
                names_to = "variable", values_to = "value")
 
 # Plot data
+cbPalette <- c("#56B4E9", "#E69F00", "#CC79A7")
 g <- ggplot(df_long, aes(time_stamp, value, color = variable)) + 
   geom_line(linewidth = 1) + facet_wrap(. ~ sensor_index, nrow = 3) + 
+  scale_colour_manual(values=cbPalette) + theme_light() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 # Create images folder
@@ -31,4 +33,4 @@ images_dir <- here("images")
 dir.create(images_dir, showWarnings = FALSE, recursive = TRUE)
 
 # Save plot
-ggsave(filename = here(images_dir, "pa_data.png"), plot = g)
+ggsave(here(images_dir, "pa_data.png"), plot = g, width = 8, height = 5)
