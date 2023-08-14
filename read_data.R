@@ -22,6 +22,13 @@ df_long <- df %>%
                names_to = "variable", values_to = "value")
 
 # Plot data
-ggplot(df_long, aes(time_stamp, value, color = variable)) + 
+g <- ggplot(df_long, aes(time_stamp, value, color = variable)) + 
   geom_line(linewidth = 1) + facet_wrap(. ~ sensor_index, nrow = 3) + 
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
+
+# Create images folder
+images_dir <- here("images")
+dir.create(images_dir, showWarnings = FALSE, recursive = TRUE)
+
+# Save plot
+ggsave(filename = here(images_dir, "pa_data.png"), plot = g)

@@ -35,3 +35,15 @@ crontab -l
 ```
 bash ./run_daily.sh
 ```
+
+## Results
+
+CSV files will be stored in a data folder called "data" or whatever you have
+specified in the setup in *get_data.R* as the variable *data_dir*. There will 
+be one CSV file per station. The CSV files will grow in size as new data is 
+appended to them by *get_data.R* on subsequent executions.
+
+And example plot from running *read_data.R* is below:
+
+![example plot](images/pa_data.png)
+
