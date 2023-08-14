@@ -43,6 +43,11 @@ specified in the setup in *get_data.R* as the variable *data_dir*. There will
 be one CSV file per station. The CSV files will grow in size as new data is 
 appended to them by *get_data.R* on subsequent executions.
 
+If you run the R script from the Bash script (*run_daily.sh*), then you should
+see a log file (*get_data_log.txt*) with an entry for each execution attempt. 
+Errors and warnings may appear after the timestamp for each attempt if the 
+script encountered difficulties getting the data.
+
 An example plot from running *read_data.R* is shown below:
 
 ![example plot](images/pa_data.png)
