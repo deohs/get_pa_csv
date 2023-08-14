@@ -1,0 +1,1 @@
+00 00 * * * /path/to/project/run_daily.sh
