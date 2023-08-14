@@ -21,7 +21,7 @@ site <- 'https://map.purpleair.com'
 user_agent_str <- "Mozilla/5.0"
 n_retries <- 20
 sleep_secs <- 5
-average_min <- "10"
+average_min <- 10
 # "10 minute average history maximum time span is three (3) days."
 days_history <- 2
 data_csv_file_suffix <- "_pm25.csv"
@@ -122,9 +122,6 @@ for (id in ids) {
     read_key <- parse_json(resp)$sensor$primary_key_a
   }
   
-  # Show warnings
-  warnings()
-  
   if(!is.null(read_key)) {
     resp <- get_data(site, referer, token, read_key, id, fields, 
                      average_min, days_history, user_agent_str)
@@ -140,3 +137,6 @@ for (id in ids) {
     stop(paste0("Cannot get read key for ", id, ". ", get_description(resp)))
   }
 }
+
+# Show warnings
+warnings()
