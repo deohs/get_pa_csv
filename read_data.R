@@ -25,7 +25,7 @@ df_long <- df %>%
 cbPalette <- c("#56B4E9", "#E69F00", "#CC79A7")
 g <- ggplot(df_long, aes(time_stamp, value, color = variable)) + 
   geom_line(linewidth = 1) + facet_wrap(. ~ sensor_index, nrow = 3) + 
-  scale_colour_manual(values=cbPalette) + theme_light() +
+  scale_colour_manual(values=cbPalette) + theme_grey() +
   theme(axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1))
 
 # Create images folder
