@@ -21,6 +21,7 @@ site <- 'https://map.purpleair.com'
 user_agent_str <- "Mozilla/5.0"
 n_retries <- 20
 sleep_secs <- 5
+average_min <- "10"
 # "10 minute average history maximum time span is three (3) days."
 days_history <- 2
 data_csv_file_suffix <- "_pm25.csv"
@@ -64,7 +65,7 @@ get_sensor_info <- function(site, referer, id, token, user_agent_str) {
 
 # Get data (for a station)
 get_data <- function(site, referer, token, read_key, id, fields, 
-                     days_history, user_agent_str) {
+                     average_min, days_history, user_agent_str) {
   current_time <- now()
   start_time <- current_time - days(days_history)
   start_timestamp <- start_time %>% format_time()
@@ -72,8 +73,10 @@ get_data <- function(site, referer, token, read_key, id, fields,
   fields_str <- paste(fields, collapse = ",")
   url <- paste0(site, '/v1/sensors/', id, '/history/csv?', 
                 "fields=", fields_str, "&read_key=", read_key, 
-                "&start_timestamp=", start_timestamp,
-                "&end_timestamp=", end_timestamp, "&token=", token)
+                "&start_timestamp=", start_timestamp, 
+                "&end_timestamp=", end_timestamp, 
+                "&average=", average_min, 
+                "&token=", token)
   GET(URLencode(url), user_agent(user_agent_str), 
       add_headers('Referer' = referer, 
                   'Accept' = 'text/csv; charset=utf-8'))
@@ -124,7 +127,7 @@ for (id in ids) {
   
   if(!is.null(read_key)) {
     resp <- get_data(site, referer, token, read_key, id, fields, 
-                     days_history, user_agent_str)
+                     average_min, days_history, user_agent_str)
     if (resp$status_code == 200) {
       # Read results into a dataframe and save as CSV
       df <- read_csv(resp$content, show_col_types = FALSE, na = c("NA", "null"))
