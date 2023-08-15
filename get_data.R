@@ -137,6 +137,9 @@ for (id in ids) {
       csv <- rawToChar(resp$content)
       df <- read_csv(csv, show_col_types = FALSE, na = c("NA", "null")) %>% 
         arrange(sensor_index, time_stamp)
+      # Note: The timezone in time_stamp is UTC ("Z"). 
+      #       To see time_stamp values adjusted for the local timezone, use: 
+      # df %>% mutate(time_stamp = as_datetime(time_stamp, tz = Sys.timezone()))
       save_results(df, id, data_dir, data_csv_file_suffix)
       Sys.sleep(sleep_secs)
     } else {
