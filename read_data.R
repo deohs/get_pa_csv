@@ -2,7 +2,7 @@
 # and then produce a scatter plot to view the data
 
 # Load packages, installing as needed
-if (!requireNamespace("pacman")) install.packages('pacman')
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages('pacman')
 pacman::p_load(here, dplyr, tidyr, readr, purrr, ggplot2)
 
 # Define path to data files
