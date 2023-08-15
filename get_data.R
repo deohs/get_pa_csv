@@ -45,10 +45,14 @@ get_token <- function(site, referer, user_agent_str) {
   # Reset httr handle (and cookies) for site
   handle_reset(site)
   
-  # Get session ID (stored in a cookie) and token
-  resp <- GET(URLencode(site), config(user_agent(user_agent_str)))
-  url <- paste0(site, '/token?version=2.0.12')
-  GET(URLencode(url), user_agent(user_agent_str), 
+  # Get session ID (stored in a cookie)
+  url <- parse_url(site)
+  resp <- GET(build_url(url), user_agent(user_agent_str))
+  
+  # Get token
+  url$path <- 'token'
+  url$query <- list('version' = "2.0.12")
+  GET(build_url(url), user_agent(user_agent_str), 
       add_headers('Referer' = referer,
                   'Accept' = 'text/plain; charset=utf-8')) %>% 
     read_html() %>% html_text()
@@ -56,9 +60,10 @@ get_token <- function(site, referer, user_agent_str) {
 
 # Get sensor info (in order to get the "read key" for a station)
 get_sensor_info <- function(site, referer, id, token, user_agent_str) {
-  url <- paste0(site, "/v1/sensors/", id, "?token=", token, 
-                "&fields=primary_key_a")
-  GET(URLencode(url), user_agent(user_agent_str), 
+  url <- parse_url(site)
+  url$path <- paste0('v1/sensors/', id)
+  url$query <- list('token' = token, 'fields' = 'primary_key_a')
+  GET(build_url(url), user_agent(user_agent_str), 
       add_headers('Referer' = referer, 
                   'Accept' = 'application/json; charset=utf-8'))
 }
@@ -71,13 +76,15 @@ get_data <- function(site, referer, token, read_key, id, fields,
   start_timestamp <- start_time %>% format_time()
   end_timestamp <- current_time %>% format_time()
   fields_str <- paste(fields, collapse = ",")
-  url <- paste0(site, '/v1/sensors/', id, '/history/csv?', 
-                "fields=", fields_str, "&read_key=", read_key, 
-                "&start_timestamp=", start_timestamp, 
-                "&end_timestamp=", end_timestamp, 
-                "&average=", average_min, 
-                "&token=", token)
-  GET(URLencode(url), user_agent(user_agent_str), 
+  url <- parse_url(site)
+  url$path <- paste0('v1/sensors/', id, '/history/csv')
+  url$query <- list('fields' = fields_str, 
+                    'read_key' = read_key, 
+                    'start_timestamp' = start_timestamp, 
+                    'end_timestamp' = end_timestamp, 
+                    'average' = average_min, 
+                    'token' = token)
+  GET(build_url(url), user_agent(user_agent_str), 
       add_headers('Referer' = referer, 
                   'Accept' = 'text/csv; charset=utf-8'))
 }
@@ -127,7 +134,9 @@ for (id in ids) {
                      average_min, days_history, user_agent_str)
     if (resp$status_code == 200) {
       # Read results into a dataframe and save as CSV
-      df <- read_csv(resp$content, show_col_types = FALSE, na = c("NA", "null"))
+      csv <- rawToChar(resp$content)
+      df <- read_csv(csv, show_col_types = FALSE, na = c("NA", "null")) %>% 
+        arrange(sensor_index, time_stamp)
       save_results(df, id, data_dir, data_csv_file_suffix)
       Sys.sleep(sleep_secs)
     } else {
