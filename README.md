@@ -55,3 +55,6 @@ An example plot from running *read_data.R* is shown below:
 
 ![example plot](images/pa_data.png)
 
+Additionally, sensor information will be written to a CSV file called 
+*sensor_info.csv* which can be found in your *data_dir* folder. This file 
+will be overwritten each time *get_data.R* is successfully run.

@@ -62,7 +62,11 @@ get_token <- function(site, referer, user_agent_str) {
 get_sensor_info <- function(site, referer, id, token, user_agent_str) {
   url <- parse_url(site)
   url$path <- paste0('v1/sensors/', id)
-  url$query <- list('token' = token, 'fields' = 'primary_key_a')
+  fields <- c('sensor_index', 'name', 'location_type', 'latitude', 'longitude', 
+              'altitude', 'channel_state', 'channel_flags', 'confidence', 
+              'primary_key_a')
+  fields_str <- paste(fields, collapse = ",")
+  url$query <- list('token' = token, 'fields' = fields_str)
   GET(build_url(url), user_agent(user_agent_str), 
       add_headers('Referer' = referer, 
                   'Accept' = 'application/json; charset=utf-8'))
@@ -113,6 +117,9 @@ referer <- site
 token <- get_token(site, referer, user_agent_str)
 Sys.sleep(sleep_secs)
 
+# Create an empty list to store sensor information
+sensor_info <- list()
+
 for (id in ids) {
   # Get read key
   resp <- get_sensor_info(site, referer, id, token, user_agent_str)
@@ -130,6 +137,7 @@ for (id in ids) {
   }
   
   if(!is.null(read_key)) {
+    sensor_info[[id]] <- parse_json(resp) %>% .$sensor %>% as_tibble()
     resp <- get_data(site, referer, token, read_key, id, fields, 
                      average_min, days_history, user_agent_str)
     if (resp$status_code == 200) {
@@ -149,6 +157,10 @@ for (id in ids) {
     stop(paste0("Cannot get read key for ", id, ". ", get_description(resp)))
   }
 }
+
+# Write sensor information to a CSV file
+sensor_info_df <- bind_rows(sensor_info)
+write_csv(sensor_info_df, here(data_dir, "sensor_info.csv"))
 
 # Show warnings
 warnings()
