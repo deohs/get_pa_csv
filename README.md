@@ -18,7 +18,7 @@ The two R scripts have been tested to work on Windows, macOS, and Ubuntu Linux. 
 The steps below assume you are using this on a Linux, Unix, or macOS system that has the "cron" utility installed and the Bash shell.
  
 1. Put all of these files in a single folder, preferably an RStudio Project folder.
-2. Edit the settings in the "Initialize variables"" section of *get_data.R* to suit your needs.
+2. Edit the settings in the "Initialize variables" section of *get_data.R* to suit your needs.
 3. Edit the folder path in *run_daily.sh* and *crontab.txt* to match the folder path that stores these files.
 4. Edit the first line of *run_daily.sh* to correct the path to the Bash interpreter, if necessary.
 5. Edit the file paths in *run_daily.sh* for the *date* and *Rscript* utilities, if necessary.
