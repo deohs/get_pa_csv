@@ -9,7 +9,7 @@
 # -----
 
 # Load packages, installing as needed
-if (!requireNamespace("pacman")) install.packages('pacman')
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages('pacman')
 pacman::p_load(here, dplyr, readr, stringr, lubridate, httr, rvest, jsonlite)
 
 # Create data folder
