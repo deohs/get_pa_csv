@@ -12,11 +12,8 @@
 if (!requireNamespace("pacman", quietly = TRUE)) install.packages('pacman')
 pacman::p_load(here, dplyr, readr, stringr, lubridate, httr, rvest, jsonlite)
 
-# Create data folder
-data_dir <- here("data")
-dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
-
 # Initialize variables
+data_dir <- here("data")
 site <- 'https://map.purpleair.com'
 user_agent_str <- "Mozilla/5.0"
 n_retries <- 20
@@ -112,6 +109,9 @@ get_description <- function(resp) {
 # Main routine
 # ------------
 
+# Create data folder
+dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
+
 # Get token
 referer <- site
 token <- get_token(site, referer, user_agent_str)
@@ -160,7 +160,9 @@ for (id in ids) {
 
 # Write sensor information to a CSV file
 sensor_info_df <- bind_rows(sensor_info)
-write_csv(sensor_info_df, here(data_dir, "sensor_info.csv"))
+if (nrow(sensor_info_df) > 0) {
+  write_csv(sensor_info_df, here(data_dir, "sensor_info.csv"))
+}
 
 # Show warnings
 warnings()
