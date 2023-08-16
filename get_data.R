@@ -13,7 +13,6 @@ if (!requireNamespace("pacman", quietly = TRUE)) install.packages('pacman')
 pacman::p_load(here, dplyr, readr, stringr, lubridate, httr, rvest, jsonlite)
 
 # Initialize variables
-data_dir <- here("data")
 site <- 'https://map.purpleair.com'
 user_agent_str <- "Mozilla/5.0"
 n_retries <- 20
@@ -21,11 +20,12 @@ sleep_secs <- 5
 average_min <- 10
 # "10 minute average history maximum time span is three (3) days."
 days_history <- 2
-data_csv_file_suffix <- "_pm25.csv"
 ids <- as.character(c(178571, 13665, 164131, 107952, 165227, 10168, 
                       162961, 102818, 178569, 116223, 164113, 10188))
 fields <- c("pm2.5_atm_a", "pm2.5_atm_b", "humidity_a", "humidity_b", 
             "temperature_a", "temperature_b")
+data_dir <- here("data")
+data_csv_file_suffix <- "_pm25.csv"
 
 # ----------------
 # Define functions
