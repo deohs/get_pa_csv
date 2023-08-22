@@ -8,6 +8,7 @@ This example shows how data can be retrieved from PurpleAir using R and a schedu
 
 - *get_data.R* is the R script which gets the data
 - *read_data.R* is the R script which reads all of the data files and makes a simple plot.
+- *show_locations.R* is the R script which makes a map of selected sensor locations.
 - *run_daily.sh* is a Bash script to run get_data_v2.R and is executed by the cron utility
 - *crontab.txt* is the crontab entry to run the Bash script
 
@@ -59,3 +60,9 @@ Additionally, sensor information will be written to a CSV file called
 *sensor_info.csv* which can be found in your *data_dir* folder. This file 
 will be overwritten each time *get_data.R* is successfully run. This CSV 
 contains metadata about each sensor such as name, latitude, longitude, etc.
+
+This sensor information CSV file can be used to generate a map of your sensor 
+locations using the *show_locations.R* R script.
+
+![example map](images/sensor_map.jpg)
+
