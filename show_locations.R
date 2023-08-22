@@ -27,6 +27,7 @@ pacman::p_load(here, readr, dplyr, tidyr, maps, stringr, ggmap, ggrepel)
 data_dir <- here("data")
 images_dir <- here("images")
 sensor_info_path <- here(data_dir, "sensor_info.csv")
+most_recent_path <- here("data", "most_recent.csv")
 
 # Create images folder
 dir.create(images_dir, showWarnings = FALSE, recursive = TRUE)
@@ -42,8 +43,23 @@ if (file.exists(sensor_info_path)) {
                                 '^(?:Indoor )?MV Clean Air Ambassador ?@ '),
                     ' (', location_type, ')'))
 } else {
-  stop(paste0("Can't read ", data_path, "!"))
+  stop(paste0("Can't read ", sensor_info_path, "!"))
 }
+
+# Get PurpleAir most recent data
+if (file.exists(most_recent_path)) {
+  most_recent <- read_csv(most_recent_path, col_types = 'nTnnn', 
+                          show_col_types = FALSE,
+                          locale = locale(tz = Sys.timezone()))
+} else {
+  stop(paste0("Can't read ", most_recent_path, "!"))
+}
+
+# Merge datasets
+sensor_info <- sensor_info %>% left_join(most_recent, by = c('sensor_index'))
+sensor_info <- sensor_info %>% 
+  mutate(label = paste0(label, '\npm2.5_atm_a = ', round(pm2.5_atm_a)))
+most_recent_time_stamp <- max(sensor_info$time_stamp)
 
 # Create bounding box.
 bbox <- make_bbox(longitude, latitude, sensor_info, f = .4)
@@ -58,8 +74,11 @@ g <- ggmap(ggmap = stamen_basemap) +
                    size = 1.75, vjust = .5, hjust = .5) +
   theme_void() +
   labs(x = NULL, y = NULL, fill = NULL,
-       title = "PurpleAir Sensor Locations") + 
-  theme(plot.title = element_text(size = 10))
+       title = "PurpleAir Sensor Locations", 
+       subtitle = paste("Most recent data as of:", 
+                        format(most_recent_time_stamp, "%a %b %d %X %Y %Z"))) + 
+  theme(plot.title = element_text(size = 10), 
+        plot.subtitle = element_text(size = 8))
 
 # Save the map as a JPG file.
 image_path <- here(images_dir, "sensor_map.jpg")

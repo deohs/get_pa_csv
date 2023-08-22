@@ -20,6 +20,13 @@ df <- map_df(fp, read_csv, col_types = 'Tcnnnn', show_col_types = FALSE,
   arrange(sensor_index, time_stamp) %>% 
   distinct(sensor_index, time_stamp, .keep_all = TRUE)
 
+# Save most recent readings as a CSV file
+most_recent <- df %>% group_by(sensor_index) %>% 
+  summarise(time_stamp = max(time_stamp)) %>% 
+  left_join(df, by = c('sensor_index', 'time_stamp')) %>% 
+  select(sensor_index, time_stamp, humidity_a, temperature_a, pm2.5_atm_a)
+write_csv(most_recent, here("data", "most_recent.csv"))
+
 # Reshape data for plotting
 df_long <- df %>% 
   select(time_stamp, sensor_index, pm2.5_atm_a, temperature_a, humidity_a) %>% 
