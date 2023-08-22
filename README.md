@@ -12,7 +12,7 @@ This example shows how data can be retrieved from PurpleAir using R and a schedu
 - *run_daily.sh* is a Bash script to run get_data_v2.R and is executed by the cron utility
 - *crontab.txt* is the crontab entry to run the Bash script
 
-The two R scripts have been tested to work on Windows, macOS, and Ubuntu Linux. The Bash script and crontab file are intended to be used on a Linux server and are not needed to run the R scripts from RStudio.
+The three R scripts have been tested to work on Windows, macOS, and Ubuntu Linux. The Bash script and crontab file are intended to be used on a Linux server and are not needed to run the R scripts from RStudio.
  
 ## Usage
 
