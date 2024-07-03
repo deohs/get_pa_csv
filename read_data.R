@@ -15,7 +15,7 @@ plot_filepath <- here(images_dir, "pa_data.png")
 # Import CSV files into a single data frame, sort and remove duplicates
 fp <- list.files(data_dir, data_csv_file_suffix, 
                  full.names = TRUE, recursive = TRUE)
-df <- map_df(fp, read_csv, col_types = 'Tcnnnn', show_col_types = FALSE,
+df <- map_df(fp, read_csv, col_types = 'Tcnnnnnn', show_col_types = FALSE,
              locale = locale(tz = Sys.timezone())) %>% 
   arrange(sensor_index, time_stamp) %>% 
   distinct(sensor_index, time_stamp, .keep_all = TRUE)

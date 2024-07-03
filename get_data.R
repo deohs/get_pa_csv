@@ -92,6 +92,8 @@ get_data <- function(site, referer, token, read_key, id, fields,
 
 # Save results (to CSV)
 save_results <- function(df, id, data_dir, data_csv_file_suffix) {
+  data_dir <- file.path(data_dir, id)
+  dir.create(data_dir, showWarnings = FALSE, recursive = TRUE)
   fp <- here(data_dir, paste0(id, data_csv_file_suffix))
   if (!file.exists(fp)) {
     write_csv(x = df, file = fp)
